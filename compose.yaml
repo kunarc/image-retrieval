@@ -1,0 +1,63 @@
+services:
+  image-retrieval:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: image-retrieval:2.0
+    container_name: image-retrieval2
+    volumes:
+      - image-data:/build/image_retrieval/static/images
+    ports:
+      - "3000:3000"
+    networks:
+      - image-retrieval-network
+    depends_on: 
+      - image-retrieval-db
+      - image-retrieval-es
+
+  image-retrieval-db:
+    image: mysql:latest
+    container_name: image-retrieval-db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 200483
+      MYSQL_DATABASE: image_retrieval
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - image-retrieval-network
+
+  image-retrieval-es:
+    image: elasticsearch:7.12.0
+    container_name: image-retrieval-es
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - discovery.type=single-node
+    networks:
+      - image-retrieval-network
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+
+  image-retrieval-kibana:
+    container_name: image-retrieval-kibana
+    image: kibana:7.12.0
+    ports:
+      - "5601:5601"
+    networks:
+      - image-retrieval-network
+    depends_on:
+      - image-retrieval-es
+    environment:
+      ELASTICSEARCH_HOSTS: http://image-retrieval-es:9200
+
+networks:
+  image-retrieval-network:
+    driver: bridge
+
+volumes:
+  es-data:
+  mysql-data:
+  image-data:

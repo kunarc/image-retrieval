@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option go_package = "./pb";
+
+service SearchImage {
+    rpc Search(SearchRequest) returns (SearchResponse);
+}
+message SearchRequest {
+    string query = 1;
+}
+message SearchResponse {
+    repeated Image images = 1;
+}
+message Image {
+    string url = 1;
+}

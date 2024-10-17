@@ -1,0 +1,44 @@
+{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "multi_match": {
+                    "query": "梁东卢",
+                    "fields": ["name", "artist", "details"]
+                  }
+                },
+                {
+                    "term": {"type": "图像砖"}
+                },
+                {
+                    "bool": {
+                        "should": [
+                            {"term": {"year": "1999"}},
+                            {"term": {"year": "1998"}}
+                        ]
+                    }
+                },
+                {
+                    "bool": {
+                        "should": [
+                            {"term": {"museum": "1999"}},
+                            {"term": {"museum": "1998"}}
+                        ]
+                    }
+                },
+                {
+                    "bool": {
+                        "should": [
+                            {"term": {"specificType": "砖"}},
+                            {"term": {"specificType": "砖"}}
+                        ]
+                    }
+                }
+            ]
+          
+        }
+    },
+    "from": 0,
+    "size": 3
+}
